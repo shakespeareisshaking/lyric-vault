@@ -1,3 +1,5 @@
+import { auth, provider } from "./firebase";
+import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { deleteDoc, doc } from "firebase/firestore";
 import React, { useState, useEffect } from 'react';
 import { Heart, Music, Send, Trash2, Plus, Sparkles, Star, Ghost } from 'lucide-react';
@@ -14,6 +16,10 @@ const App = () => {
   const [newLyrics, setNewLyrics] = useState('');
   const [newMood, setNewMood] = useState('Angst');
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [user, setUser] = useState(null);   // (if not already added)
+  const handleLogin = async () => {
+    await signInWithPopup(auth, provider);
+  };
 
   // ✅ useEffect OUTSIDE useState
   useEffect(() => {
@@ -71,6 +77,12 @@ const App = () => {
         <p className="mt-4 text-purple-300 font-medium tracking-widest uppercase text-sm">
           Everything I can't say out loud 
         </p>
+        <button 
+           onClick={handleLogin}
+           className="mt-6 bg-white text-purple-900 px-6 py-2 rounded-lg font-bold hover:bg-purple-100 transition"
+        >
+          Login with Google
+        </button>
         <div className="flex justify-center gap-4 mt-6">
           <span className="bg-purple-900/50 border border-purple-500/30 px-3 py-1 rounded-full text-xs flex items-center gap-2">
             <Heart size={12} className="text-yellow-400" /> feel too much?
