@@ -121,9 +121,9 @@ const App = () => {
                       onChange={(e) => setNewMood(e.target.value)}
                       className="bg-purple-900/50 border border-purple-700 rounded-md px-3 py-1 text-sm focus:outline-none"
                     >
-                      <option>Angst</option>
+                      <option>Lovey</option>
                       <option>Heartbroken</option>
-                      <option>Vengeful</option>
+                      <option>Angst</option>
                       <option>Nostalgic</option>
                       <option>Relieved</option>
                     </select>
