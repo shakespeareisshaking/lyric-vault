@@ -1,3 +1,4 @@
+import { deleteDoc, doc } from "firebase/firestore";
 import React, { useState, useEffect } from 'react';
 import { Heart, Music, Send, Trash2, Plus, Sparkles, Star, Ghost } from 'lucide-react';
 
@@ -49,9 +50,10 @@ const App = () => {
     window.location.reload();
   };
 
-  const deleteSong = (id) => {
-    setSongs(songs.filter(song => song.id !== id));
-  };
+  const deleteSong = async (id) => {
+  await deleteDoc(doc(db, "songs", id));
+  window.location.reload();
+};
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] text-purple-100 font-sans selection:bg-purple-500 selection:text-white pb-20">
@@ -208,7 +210,7 @@ const App = () => {
       </main>
 
       <footer className="mt-20 text-center text-purple-400/50 text-xs tracking-[0.3em] uppercase pb-10">
-        © {new Date().getFullYear()} Vault of Unsent Messages by Mohitha Sen
+        © {new Date().getFullYear()} Vault of secrets by Mohitha Sen
       </footer>
     </div>
   );
