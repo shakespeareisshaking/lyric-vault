@@ -1,38 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Music, Send, Trash2, Plus, Sparkles, Star, Ghost } from 'lucide-react';
 
+import { db } from "./firebase";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+
 const App = () => {
-  const [songs, setSongs] = useState([
-    {
-      id: 1,
-      title: "Darkness feels like home",
-      lyrics: "don’t turn on the light\nI know this darkness –\nevery corner and every shadow.\ndon’t reach for the switch.\nI’m not afraid.\nI’m home.\n\nthey said,\n“the monsters under your bed aren’t real,\nthe world is full of light,\npeople are kind.”\n\nbut no one warned me\nthat daylight hides the real monsters –\nsmiles painted over lies,\nhands that hurt in the open,\neyes that watch like predators.\n\nI used to beg for the night to end,\nnow, I beg for it to stay.\n\nbecause the monsters beneath my bed\nnever pretended to love me.\nbut the ones outside?\nthey wear masks\nand call themselves human.\n\nthe darkness doesn't ask much.\nit sits with you in silence\nbut out in the light, in front of the mirror,\nyou see yourself, the one you should be. with expectations you don't know if you'll meet.\nbut darkness feels like home\nwhere you can exist in silence.",      
-      date: "July 6, 2025 ",
-      mood: "Heartbroken"
-    }
-  ]);
+
+  // ✅ state (ONLY data here)
+  const [songs, setSongs] = useState([]);
 
   const [newTitle, setNewTitle] = useState('');
   const [newLyrics, setNewLyrics] = useState('');
   const [newMood, setNewMood] = useState('Angst');
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  const handlePost = (e) => {
+  // ✅ useEffect OUTSIDE useState
+  useEffect(() => {
+    const fetchSongs = async () => {
+      const querySnapshot = await getDocs(collection(db, "songs"));
+      const data = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setSongs(data);
+    };
+
+    fetchSongs();
+  }, []);
+
+  // ✅ handlePost (correct)
+  const handlePost = async (e) => {
     e.preventDefault();
     if (!newTitle || !newLyrics) return;
 
     const newSong = {
-      id: Date.now(),
       title: newTitle,
       lyrics: newLyrics,
-      date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      date: new Date().toLocaleDateString(),
       mood: newMood
     };
 
-    setSongs([newSong, ...songs]);
+    await addDoc(collection(db, "songs"), newSong);
+
     setNewTitle('');
     setNewLyrics('');
     setIsFormOpen(false);
+
+    window.location.reload();
   };
 
   const deleteSong = (id) => {
