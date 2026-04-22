@@ -38,6 +38,12 @@ const App = () => {
   // ✅ handlePost (correct)
   const handlePost = async (e) => {
     e.preventDefault();
+
+    if (!user) {
+      alert("Login first 😌");
+      return;
+    }
+
     if (!newTitle || !newLyrics) return;
 
     const newSong = {
@@ -97,14 +103,20 @@ const App = () => {
         {/* Post Button */}
         <div className="flex justify-center mb-12">
           {!isFormOpen ? (
-            <button 
-              onClick={() => setIsFormOpen(true)}
-              className="group relative flex items-center gap-3 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(147,51,234,0.4)]"
-            >
-              <Plus size={20} />
-              Spill Your Beans
-              <Sparkles className="absolute -top-2 -right-2 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
-            </button>
+            user ? (
+              <button 
+                onClick={() => setIsFormOpen(true)}
+                className="group relative flex items-center gap-3 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(147,51,234,0.4)]"
+              >
+                <Plus size={20} />
+                Spill Your Beans
+                <Sparkles className="absolute -top-2 -right-2 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
+              </button>
+            ) : (
+              <p className="text-purple-400 text-sm italic">
+                login to spill your thoughts 😌
+              </p>
+            )
           ) : (
             <div className="w-full bg-[#2a2a2a] border-2 border-dashed border-purple-500/50 rounded-3xl p-8 animate-in fade-in zoom-in duration-300">
               <div className="flex justify-between items-center mb-6">
