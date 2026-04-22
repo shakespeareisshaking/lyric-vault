@@ -34,6 +34,14 @@ const App = () => {
 
     fetchSongs();
   }, []);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("User:", currentUser);
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // ✅ handlePost (correct)
   const handlePost = async (e) => {
@@ -101,68 +109,72 @@ const App = () => {
 
       <main className="max-w-4xl mx-auto px-6 relative z-10">
         {/* Post Button */}
-        <div className="flex justify-center mb-12">
-          {!isFormOpen ? (
-            user ? (
+      <div className="flex justify-center mb-12">
+
+        {/* 🔒 Not logged in */}
+        {!user && (
+          <p className="text-purple-400 text-sm italic">
+            login to spill your thoughts 😌
+          </p>
+        )}
+
+        {/* ✅ Logged in + form closed */}
+        {user && !isFormOpen && (
+          <button 
+            onClick={() => setIsFormOpen(true)}
+            className="group relative flex items-center gap-3 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(147,51,234,0.4)]"
+          >
+            <Plus size={20} />
+            Spill Your Beans
+            <Sparkles 
+              className="absolute -top-2 -right-2 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity" 
+              size={20} 
+            />
+          </button>
+        )}
+
+        {/* 📝 Logged in + form open */}
+        {user && isFormOpen && (
+          <div className="w-full bg-[#2a2a2a] border-2 border-dashed border-purple-500/50 rounded-3xl p-8 animate-in fade-in zoom-in duration-300">
+            
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold italic">New Entry...</h2>
               <button 
-                onClick={() => setIsFormOpen(true)}
-                className="group relative flex items-center gap-3 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(147,51,234,0.4)]"
+                onClick={() => setIsFormOpen(false)} 
+                className="text-purple-400 hover:text-white"
               >
-                <Plus size={20} />
-                Spill Your Beans
-                <Sparkles className="absolute -top-2 -right-2 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
+                Cancel
               </button>
-            ) : (
-              <p className="text-purple-400 text-sm italic">
-                login to spill your thoughts 😌
-              </p>
-            )
-          ) : (
-            <div className="w-full bg-[#2a2a2a] border-2 border-dashed border-purple-500/50 rounded-3xl p-8 animate-in fade-in zoom-in duration-300">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold italic">New Entry...</h2>
-                <button onClick={() => setIsFormOpen(false)} className="text-purple-400 hover:text-white">Cancel</button>
-              </div>
-              <form onSubmit={handlePost} className="space-y-4">
-                <input 
-                  type="text" 
-                  placeholder="Song Title (make it dramatic)" 
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full bg-black/40 border border-purple-800/50 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 text-xl font-bold"
-                />
-                <textarea 
-                  placeholder="Write the lyrics that would make them regret everything..."
-                  value={newLyrics}
-                  onChange={(e) => setNewLyrics(e.target.value)}
-                  className="w-full bg-black/40 border border-purple-800/50 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 min-h-[200px] leading-relaxed"
-                />
-                <div className="flex flex-wrap gap-4 items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <label className="text-sm text-purple-400 uppercase tracking-widest font-bold">Mood:</label>
-                    <select 
-                      value={newMood}
-                      onChange={(e) => setNewMood(e.target.value)}
-                      className="bg-purple-900/50 border border-purple-700 rounded-md px-3 py-1 text-sm focus:outline-none"
-                    >
-                      <option>Lovey</option>
-                      <option>Heartbroken</option>
-                      <option>Angst</option>
-                      <option>Nostalgic</option>
-                      <option>Relieved</option>
-                    </select>
-                  </div>
-                  <button 
-                    type="submit"
-                    className="bg-white text-purple-900 hover:bg-purple-100 px-8 py-3 rounded-lg font-black uppercase tracking-tighter flex items-center gap-2 transition-colors"
-                  >
-                    Post it! <Send size={18} />
-                  </button>
-                </div>
-              </form>
             </div>
-          )}
-        </div>
+
+            <form onSubmit={handlePost} className="space-y-4">
+              <input 
+                type="text" 
+                placeholder="Song Title (make it dramatic)" 
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                className="w-full bg-black/40 border border-purple-800/50 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 text-xl font-bold"
+              />
+
+              <textarea 
+                placeholder="Write the lyrics..."
+                value={newLyrics}
+                onChange={(e) => setNewLyrics(e.target.value)}
+                className="w-full bg-black/40 border border-purple-800/50 rounded-lg p-4 min-h-[200px]"
+              />
+
+              <button 
+                type="submit"
+                className="bg-white text-purple-900 px-6 py-2 rounded-lg font-bold"
+              >
+                Post
+              </button>
+            </form>
+
+          </div>
+        )}
+
+      </div>
 
         {/* Lyrics Feed */}
         <div className="grid gap-8">
