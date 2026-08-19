@@ -7,36 +7,36 @@ A personal lyric archive built with React, Firebase, and Tailwind CSS.
 A little digital scrapbook for storing songs, lyrics, moods, and the occasional emotional damage. 💜
 
 
-## ✨ Features
+## Features
 
-- 📝 **Create lyric entries**
+- **Create lyric entries**
   - Add a song title
   - Write and save lyrics
   - Assign a mood to each entry
 
-- ☁️ **Cloud database**
+- **Cloud database**
   - Songs are stored using Firebase Firestore
   - Entries persist across devices
   - New posts can be added from anywhere
 
-- 👑 **Admin controls**
+- **Admin controls**
   - Google authentication for the site owner
   - Admin-only delete controls
   - Regular visitors can view and create posts without seeing admin controls
 
-- 🎨 **Scrapbook-inspired UI**
+- **Scrapbook-inspired UI**
   - Dark purple aesthetic
   - Notebook-style lyric cards
   - Decorative tape and handwritten-style elements
   - Responsive design for desktop and mobile
 
-- 🌐 **Deployed online**
+- **Deployed online**
   - Hosted with Vercel
   - Automatically updates when changes are pushed to GitHub
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **React** - Frontend UI 
 **Vite** - Development environment and build tool
@@ -49,7 +49,7 @@ A little digital scrapbook for storing songs, lyrics, moods, and the occasional 
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 lyric-vault/
 │
@@ -66,7 +66,7 @@ lyric-vault/
 ├── vite.config.js
 └── README.md
 
-# Running Locally
+## Running Locally
 1. Clone the repository
 git clone https://github.com/shakespeareisshaking/lyric-vault.git
 2. Enter the project
@@ -81,7 +81,7 @@ Vite will provide a local address, usually:
 http://localhost:5173
 
 
-# Firebase
+## Firebase
 
 The application uses Firebase for:
 Firestore
@@ -98,17 +98,17 @@ Each song contains information such as:
   mood: "Angst"
 }
 
-# Authentication
+### Authentication
 Firebase Authentication is used for the admin login.
 The site owner can authenticate using Google and access administrative controls such as deleting posts.
 
-# 👑 Admin System
+### Admin System
 The application checks the authenticated user's email:
 const isAdmin =
   user?.email === 'example@email.com';
 If the authenticated user matches the configured admin account, additional controls become available.
 
-# Regular visitor
+### Regular visitor
 Visitors can:
 View lyrics
 Create posts
@@ -119,7 +119,8 @@ The admin can additionally:
 Delete posts
 Access admin mode
 Log out of the admin account
-🌐 Deployment
+
+### Deployment
 
 The project is deployed using Vercel.
 
@@ -131,7 +132,7 @@ git push
 
 Vercel automatically builds and deploys the latest version.
 
-# 🎨 Design
+### Design
 The interface is inspired by a combination of:
 personal journals
 lyric notebooks
@@ -140,7 +141,7 @@ late-night purple aesthetics
 
 Each lyric is displayed as a notebook-style card with decorative elements to make the site feel more personal than a standard CRUD application.
 
-# 🧠 What I Learned
+### What I Learned
 
 This project helped me learn and practice:
 React components
