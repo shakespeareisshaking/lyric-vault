@@ -1,5 +1,3 @@
-import { auth, provider } from "./firebase";
-import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
 import { deleteDoc, doc } from "firebase/firestore";
 import React, { useState, useEffect } from 'react';
 import { Heart, Music, Send, Trash2, Plus, Sparkles, Star, Ghost } from 'lucide-react';
@@ -16,41 +14,11 @@ const App = () => {
   const [newLyrics, setNewLyrics] = useState('');
   const [newMood, setNewMood] = useState('Angst');
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [user, setUser] = useState(null);   // (if not already added)
-  const handleLogin = async () => {
-    await signInWithPopup(auth, provider);
-  };
-
-  // ✅ useEffect OUTSIDE useState
-  useEffect(() => {
-    const fetchSongs = async () => {
-      const querySnapshot = await getDocs(collection(db, "songs"));
-      const data = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setSongs(data);
-    };
-
-    fetchSongs();
-  }, []);
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("User:", currentUser);
-      setUser(currentUser);
-    });
-
-    return () => unsubscribe();
-  }, []);
+ 
 
   // ✅ handlePost (correct)
   const handlePost = async (e) => {
     e.preventDefault();
-
-    if (!user) {
-      alert("Login first 😌");
-      return;
-    }
 
     if (!newTitle || !newLyrics) return;
 
@@ -91,12 +59,6 @@ const App = () => {
         <p className="mt-4 text-purple-300 font-medium tracking-widest uppercase text-sm">
           Everything I can't say out loud 
         </p>
-        <button 
-           onClick={handleLogin}
-           className="mt-6 bg-white text-purple-900 px-6 py-2 rounded-lg font-bold hover:bg-purple-100 transition"
-        >
-          Login with Google
-        </button>
         <div className="flex justify-center gap-4 mt-6">
           <span className="bg-purple-900/50 border border-purple-500/30 px-3 py-1 rounded-full text-xs flex items-center gap-2">
             <Heart size={12} className="text-yellow-400" /> feel too much?
@@ -109,72 +71,68 @@ const App = () => {
 
       <main className="max-w-4xl mx-auto px-6 relative z-10">
         {/* Post Button */}
-      <div className="flex justify-center mb-12">
+        <div className="flex justify-center mb-12">
 
-        {/* 🔒 Not logged in */}
-        {!user && (
-          <p className="text-purple-400 text-sm italic">
-            login to spill your thoughts 😌
-          </p>
-        )}
+          {!isFormOpen && (
+            <button 
+              onClick={() => setIsFormOpen(true)}
+              className="group relative flex items-center gap-3 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(147,51,234,0.4)]"
+            >
+              <Plus size={20} />
+              Spill Your Beans
 
-        {/* ✅ Logged in + form closed */}
-        {user && !isFormOpen && (
-          <button 
-            onClick={() => setIsFormOpen(true)}
-            className="group relative flex items-center gap-3 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-xl font-bold transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(147,51,234,0.4)]"
-          >
-            <Plus size={20} />
-            Spill Your Beans
-            <Sparkles 
-              className="absolute -top-2 -right-2 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity" 
-              size={20} 
-            />
-          </button>
-        )}
+              <Sparkles 
+                className="absolute -top-2 -right-2 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity" 
+                size={20} 
+              />
+            </button>
+          )}
 
-        {/* 📝 Logged in + form open */}
-        {user && isFormOpen && (
-          <div className="w-full bg-[#2a2a2a] border-2 border-dashed border-purple-500/50 rounded-3xl p-8 animate-in fade-in zoom-in duration-300">
-            
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold italic">New Entry...</h2>
-              <button 
-                onClick={() => setIsFormOpen(false)} 
-                className="text-purple-400 hover:text-white"
-              >
-                Cancel
-              </button>
+          {isFormOpen && (
+            <div className="w-full bg-[#2a2a2a] border-2 border-dashed border-purple-500/50 rounded-3xl p-8 animate-in fade-in zoom-in duration-300">
+
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold italic">
+                  New Entry...
+                </h2>
+
+                <button 
+                  onClick={() => setIsFormOpen(false)}
+                  className="text-purple-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+              </div>
+
+              <form onSubmit={handlePost} className="space-y-4">
+
+                <input 
+                  type="text"
+                  placeholder="Song Title (make it dramatic)"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="w-full bg-black/40 border border-purple-800/50 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 text-xl font-bold"
+                />
+
+                <textarea 
+                  placeholder="Write the lyrics..."
+                  value={newLyrics}
+                  onChange={(e) => setNewLyrics(e.target.value)}
+                  className="w-full bg-black/40 border border-purple-800/50 rounded-lg p-4 min-h-[200px]"
+                />
+
+                <button 
+                  type="submit"
+                  className="bg-white text-purple-900 px-6 py-2 rounded-lg font-bold"
+                >
+                  Post
+                </button>
+
+              </form>
             </div>
+          )}
 
-            <form onSubmit={handlePost} className="space-y-4">
-              <input 
-                type="text" 
-                placeholder="Song Title (make it dramatic)" 
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                className="w-full bg-black/40 border border-purple-800/50 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-purple-500 text-xl font-bold"
-              />
-
-              <textarea 
-                placeholder="Write the lyrics..."
-                value={newLyrics}
-                onChange={(e) => setNewLyrics(e.target.value)}
-                className="w-full bg-black/40 border border-purple-800/50 rounded-lg p-4 min-h-[200px]"
-              />
-
-              <button 
-                type="submit"
-                className="bg-white text-purple-900 px-6 py-2 rounded-lg font-bold"
-              >
-                Post
-              </button>
-            </form>
-
-          </div>
-        )}
-
-      </div>
+        </div>
 
         {/* Lyrics Feed */}
         <div className="grid gap-8">
