@@ -434,7 +434,7 @@ const App = () => {
 
                 <input
                   type="text"
-                  placeholder="Song Title (make it dramatic)"
+                  placeholder="Your Title (make it dramatic)"
                   value={newTitle}
                   onChange={(e) =>
                     setNewTitle(e.target.value)
