@@ -386,7 +386,7 @@ const App = () => {
 
               <Plus size={20} />
 
-              Spill Your Beans
+              Post your Masterpiece
 
               <Sparkles
                 className="absolute -top-2 -right-2 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -444,7 +444,7 @@ const App = () => {
 
 
                 <textarea
-                  placeholder="Write the lyrics..."
+                  placeholder="Write your thoughts, feelings, or poems here..."
                   value={newLyrics}
                   onChange={(e) =>
                     setNewLyrics(e.target.value)
